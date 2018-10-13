@@ -45,15 +45,16 @@
 function [e0,nu] = newtonm ( ecc,m );
 
         % -------------------------  implementation   -----------------
-        numiter =    50;
+        numiter =    50; %nik-max number of iterations
         small   =     0.00000001;
         halfpi  = pi * 0.5;
         
         % -------------------------- hyperbolic  ----------------------
+        %As per textbook page71, Alg4: KepEqtnH
         if ( (ecc-1.0 ) > small )
            % -------------------  initial guess -----------------------
             if ( ecc < 1.6  )
-                if ( ((m<0.0 ) && (m>-pi)) || (m>pi) )
+                if ( ((m < 0.0 ) && (m > -pi)) || (m > pi) && (m < 2*pi) ) %nik - modified this line based on errata
                     e0= m - ecc;
                   else
                     e0= m + ecc;
@@ -67,7 +68,8 @@ function [e0,nu] = newtonm ( ecc,m );
             end
             ktr= 1;
             e1 = e0 + ( (m-ecc*sinh(e0)+e0) / (ecc*cosh(e0) - 1.0 ) );
-            while ((abs(e1-e0)>small ) && ( ktr<=numiter ))
+            while ((abs(e1-e0)>small ) && ( ktr<=numiter )) 
+                %nik-program has to stop either when convergence to errors < small occurs (or) 50 iterations are over.
                 e0= e1;
                 e1= e0 + ( ( m - ecc*sinh(e0) + e0 ) / ( ecc*cosh(e0) - 1.0  ) );
                 ktr = ktr + 1;
@@ -78,6 +80,11 @@ function [e0,nu] = newtonm ( ecc,m );
             nu  = atan2( sinv,cosv );
           else
             % --------------------- parabolic -------------------------
+            %As per textbook page69, Alg3: KepEqtnP
+            %nik- NOTE: textbook alg mentions (del_T, p) as inputs. But this
+            %code manages with (ecc, m) because m = n*del_T. Even when
+            %(del_T, p) are given, ultimately, we need to evaluate n*del_T
+            %only. So this program does no different from textbook alg3.
             if ( abs( ecc-1.0  ) < small )
 %                c = [ 1.0/3.0; 0.0; 1.0; -m];
 %                [r1r] = roots (c);
@@ -89,9 +96,10 @@ function [e0,nu] = newtonm ( ecc,m );
                 nu = 2.0  * atan(e0);
               else
                 % -------------------- elliptical ----------------------
+                %As per textbook page65, Alg2: KepEqtnE
                 if ( ecc > small )
                     % -----------  initial guess -------------
-                    if ( ((m < 0.0 ) && (m > -pi)) || (m > pi) )
+                    if ( ((m < 0.0 ) && (m > -pi)) || (m > pi) && (m < 2*pi) )%nik - modified this line based on errata
                         e0= m - ecc;
                       else
                         e0= m + ecc;
