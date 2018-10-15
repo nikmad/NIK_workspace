@@ -10,10 +10,6 @@
 %
 %  revisions
 %    vallado     - fix some mistakes                             13 apr 2004
-%    nikhil      - changed variable name from 'mu' to 'mju' as it conflicts
-%    with another MATLAB inbuild toolbox function in mu.m. Also initialized
-%    mju = 398600.4418. Now this function runs without any issues and
-%    results have been verified using Example 2-4.     (14 Oct 2018)
 %
 %  inputs          description                    range / units
 %    ro          - ijk position vector - initial  km
@@ -82,19 +78,18 @@ show = 'n';
         errork = '      ok'; 
         dtsec = dtseco;
         mulrev = 0;
-        mju = 398600.4418;
-        
+              
         if ( abs( dtseco ) > small )
             magro = mag( ro );
             magvo = mag( vo );
             rdotv= dot( ro,vo );
 
             % -------------  find sme, alpha, and a  ------------------
-            sme= ( (magvo^2)*0.5  ) - ( mju /magro );
-            alpha= -sme*2.0/mju;
+            sme= ( (magvo^2)*0.5  ) - ( mu /magro );
+            alpha= -sme*2.0/mu;
 
             if ( abs( sme ) > small )
-                a= -mju / ( 2.0 *sme );
+                a= -mu / ( 2.0 *sme );
             else
                 a= infinite;
             end
@@ -103,7 +98,7 @@ show = 'n';
             end
 
             if show =='y'
-                fprintf(1,' sme %16.8f  a %16.8f alp  %16.8f ER \n',sme/(mju/re), a/re, alpha*re );
+                fprintf(1,' sme %16.8f  a %16.8f alp  %16.8f ER \n',sme/(mu/re), a/re, alpha*re );
                 fprintf(1,' sme %16.8f  a %16.8f alp  %16.8f km \n',sme, a, alpha );
                 fprintf(1,' ktr      xn        psi           r          xn+1        dtn \n' );
             end
@@ -111,7 +106,7 @@ show = 'n';
             % ------------   setup initial guess for x  ---------------
             % -----------------  circle and ellipse -------------------
             if ( alpha >= small )
-                period= twopi * sqrt( abs(a)^3.0/mju  );
+                period= twopi * sqrt( abs(a)^3.0/mu  );
                 % ------- next if needed for 2body multi-rev ----------
                 if ( abs( dtseco ) > abs( period ) )
 % including the truncation will produce vertical lines that are parallel
@@ -120,25 +115,25 @@ show = 'n';
                     mulrev = floor(dtseco/period);
                 end;
                 if ( abs(alpha-1.0 ) > small )
-                     xold = sqrt(mju)*dtsec * alpha;
+                     xold = sqrt(mu)*dtsec * alpha;
                 else
                      % - first guess can't be too close. ie a circle, r=a
-                     xold = sqrt(mju) * dtsec * alpha * 0.97;
+                     xold = sqrt(mu) * dtsec * alpha * 0.97;
                 end
               else
                 % --------------------  parabola  ---------------------
                 if ( abs( alpha ) < small )
                     h = cross( ro,vo );
                     magh = mag(h);
-                    p= magh*magh/mju;
-                    s= 0.5  * (halfpi - datan( 3.0 *sqrt( mju / (p*p*p) )* dtsec ) );
+                    p= magh*magh/mu;
+                    s= 0.5  * (halfpi - datan( 3.0 *sqrt( mu / (p*p*p) )* dtsec ) );
                     w= atan( tan( s )^(1.0 /3.0 ) );
                     xold = sqrt(p) * ( 2.0 *cot(2.0 *w) );
                     alpha= 0.0;
                 else
                     % ------------------  hyperbola  ------------------
-                    temp= -2.0 * mju * dtsec / ...
-                          ( a*( rdotv + sign(dtsec)*sqrt(-mju*a)* ...
+                    temp= -2.0 * mu * dtsec / ...
+                          ( a*( rdotv + sign(dtsec)*sqrt(-mu*a)* ...
                           (1.0 -magro*alpha) ) );
                     xold= sign(dtsec) * sqrt(-a) *log(temp);
                 end
@@ -148,7 +143,7 @@ show = 'n';
             ktr= 1;
             dtnew = -10.0;
             
-            while ((abs(dtnew/sqrt(mju) - dtsec) >= small) && (ktr < numiter))
+            while ((abs(dtnew/sqrt(mu) - dtsec) >= small) && (ktr < numiter))
                 xoldsqrd = xold*xold;
                 znew     = xoldsqrd * alpha;
 
@@ -156,13 +151,13 @@ show = 'n';
                 [c2new,c3new] = findc2c3( znew );
 
                 % ------- use a newton iteration for new values -------
-                rval = xoldsqrd*c2new + rdotv/sqrt(mju) *xold*(1.0 -znew*c3new) + ...
+                rval = xoldsqrd*c2new + rdotv/sqrt(mu) *xold*(1.0 -znew*c3new) + ...
                          magro*( 1.0  - znew*c2new );
-                dtnew= xoldsqrd*xold*c3new + rdotv/sqrt(mju)*xoldsqrd*c2new + ...
+                dtnew= xoldsqrd*xold*c3new + rdotv/sqrt(mu)*xoldsqrd*c2new + ...
                          magro*xold*( 1.0  - znew*c3new );
 
                 % ------------- calculate new value for x -------------
-                xnew = xold + ( dtsec*sqrt(mju) - dtnew ) / rval;
+                xnew = xold + ( dtsec*sqrt(mu) - dtnew ) / rval;
 
                % ------------------------------------------------------
                % check if the orbit is an ellipse and xnew > 2pi sqrt(a), the step
@@ -182,7 +177,7 @@ show = 'n';
                    fprintf(1,'%3i %11.7f %11.7f %11.7f %11.7f %11.7f \n', ...
                           ktr,xold,znew,rval,xnew,dtnew);                      
                    fprintf(1,'%3i %11.7f %11.7f %11.7f %11.7f %11.7f \n', ...
-                          ktr,xold/sqrt(re),znew,rval/re,xnew/sqrt(re),dtnew/sqrt(mju));
+                          ktr,xold/sqrt(re),znew,rval/re,xnew/sqrt(re),dtnew/sqrt(mu));
                end
 
                 ktr = ktr + 1;
@@ -200,14 +195,14 @@ show = 'n';
                 % --- find position and velocity vectors at new time --
                 xnewsqrd = xnew*xnew;
                 f = 1.0  - ( xnewsqrd*c2new / magro );
-                g = dtsec - xnewsqrd*xnew*c3new/sqrt(mju);
+                g = dtsec - xnewsqrd*xnew*c3new/sqrt(mu);
 
                 for i= 1 : 3
                     r(i)= f*ro(i) + g*vo(i);
                 end
                 magr = mag( r );
                 gdot = 1.0  - ( xnewsqrd*c2new / magr );
-                fdot = ( sqrt(mju)*xnew / ( magro*magr ) ) * ( znew*c3new-1.0  );
+                fdot = ( sqrt(mu)*xnew / ( magro*magr ) ) * ( znew*c3new-1.0  );
                 for i= 1 : 3
                     v(i)= fdot*ro(i) + gdot*vo(i);
                 end
