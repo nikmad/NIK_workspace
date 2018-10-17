@@ -58,7 +58,7 @@
 % ------------------------------------------------------------------------------
 
 function [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coe (r,v);
-        %nikmad
+      
         constmath;
         constastro;  % don't overwrite mu
         muin = mu; % this is the km version
