@@ -42,7 +42,7 @@
 
     convrt = pi / (180*3600.0);
     
-    casenum = 3;  % 1 book
+    casenum = 2;  % 1 book
     
 %    typerun = 'l'; % laplace
     typerun = 'g'; % gauss
@@ -91,7 +91,8 @@
             % at 8-20-07 11:50,
             r2ans = [5897.954130507     5791.046114526     6682.733686585];
             v2ans = [  -4.393910234     4.576816355     1.482423676];
-            [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coeh (r2ans,v2ans, re, mu);
+            %nik [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coeh (r2ans,v2ans, re, mu);
+            [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coe  (r2ans,v2ans);
 
             year  =  2007;
             mon   =   8;
@@ -137,8 +138,8 @@
             % at 8-20-12 11:48:28.000 center time,
             r2ans = [6356.48603405     5290.53225676     6511.39697857   ];
             v2ans = [  -4.17294816     4.77654968     1.72027091];
-            [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coeh (r2ans,v2ans, re, mu);
-       
+           %nik [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coeh (r2ans,v2ans, re, mu);
+            [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coe  (r2ans,v2ans);
             year  =  2012;
             mon   =   8;
             day   =  20;
@@ -328,12 +329,14 @@
     fprintf(1,'v2     %11.7f   %11.7f  %11.7f er/tu %11.7f  %11.7f  %11.7f km/s\n',v2/velkmps, v2);
     fprintf(1,'v2 ans %11.7f   %11.7f  %11.7f er/tu %11.7f  %11.7f  %11.7f km/s\n',v2ans/velkmps, v2ans);
 
-    [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coeh (r2,v2, re, mu);
+    %nik [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coeh (r2,v2, re, mu);
+    [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coe  (r2,v2);
     fprintf(1,'         p km          a km         ecc       incl deg     raan deg    argp deg     nu deg      m deg  \n');
     fprintf(1,'coes %11.4f %11.4f %13.9f %13.7f %11.5f %11.5f %11.5f %11.5f \n',...
         p,a,ecc,incl*rad,omega*rad,argp*rad,nu*rad,m*rad );
 
-    [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coeh (r2ans,v2ans, re, mu);
+    %nik [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coeh (r2ans,v2ans, re, mu);
+    [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coe  (r2ans,v2ans);
     fprintf(1,'         p km          a km         ecc       incl deg     raan deg    argp deg     nu deg      m deg  \n');
     fprintf(1,'coes %11.4f %11.4f %13.9f %13.7f %11.5f %11.5f %11.5f %11.5f \n',...
         p,a,ecc,incl*rad,omega*rad,argp*rad,nu*rad,m*rad );

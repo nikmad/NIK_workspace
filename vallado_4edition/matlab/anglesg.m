@@ -244,7 +244,8 @@ function [r2, v2] = anglesg ( decl1,decl2,decl3,rtasc1,rtasc2, ...
         magr2 = mag( r2 );
         magr3 = mag( r3 );
 
-        [v2,theta,theta1,copa,error] = gibbsh(r1,r2,r3, re, mu);
+        %nik[v2,theta,theta1,copa,error] = gibbsh(r1,r2,r3, re, mu);
+        [v2,theta,theta1,copa,error] = hgibbs(r1,r2,r3, jd1, jd2, jd3);
 
         rad = 180.0/pi;
         fprintf(1,'r1 %11.7f %11.7f %11.7f %11.7f %11.7f \n',r1,theta*rad,theta1*rad);
@@ -253,7 +254,8 @@ function [r2, v2] = anglesg ( decl1,decl2,decl3,rtasc1,rtasc2, ...
         fprintf(1,'w gibbs km/s       v2 %11.7f %11.7f %11.7f \n',v2);
 
         if ( (strcmp(error, '          ok') == 0) && (copa < 1.0/rad) ) % 0 is false
-            [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coeh (r2,v2, re, mu);
+            %nik [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coeh (r2,v2, re, mu);
+            [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coe (r2,v2);
             fprintf(1,'coes init ans %11.4f %11.4f %13.9f %13.7f %11.5f %11.5f %11.5f %11.5f\n',...
                 p,a,ecc,incl*rad,omega*rad,argp*rad,nu*rad,m*rad );
             % --- hgibbs to get middle vector ----
@@ -261,7 +263,8 @@ function [r2, v2] = anglesg ( decl1,decl2,decl3,rtasc1,rtasc2, ...
             fprintf(1,'using hgibbs: ' );
         end
 
-        [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coeh (r2,v2, re, mu);
+        %nik [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coeh (r2,v2, re, mu);
+        [p,a,ecc,incl,omega,argp,nu,m,arglat,truelon,lonper ] = rv2coe (r2,v2);
         fprintf(1,'coes init ans %11.4f %11.4f %13.9f %13.7f %11.5f %11.5f %11.5f %11.5f\n',...
             p,a,ecc,incl*rad,omega*rad,argp*rad,nu*rad,m*rad );
         %fprintf(1,'dr %11.7f m %11.7f m/s \n',1000*mag(r2-r2ans),1000*mag(v2-v2ans) );
