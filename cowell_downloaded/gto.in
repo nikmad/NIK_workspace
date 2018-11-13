@@ -1,0 +1,23 @@
+semimajor axis (kilometers)
+(semimajor axis > 0)
+24421.2363
+
+orbital eccentricity (non-dimensional)
+(0 <= eccentricity < 1)
+0.72654389
+
+orbital inclination (degrees)
+(0 <= inclination <= 180)
+26.2998
+
+argument of perigee (degrees)
+(0 <= argument of perigee <= 360)
+270
+
+right ascension of the ascending node (degrees)
+(0 <= RAAN <= 360)
+100
+
+true anomaly (degrees)
+(0 <= true anomaly <= 360)
+0
